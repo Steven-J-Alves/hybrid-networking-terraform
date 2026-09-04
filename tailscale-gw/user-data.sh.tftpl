@@ -1,0 +1,30 @@
+#!/bin/bash
+# Tailscale subnet router bootstrap — Amazon Linux 2023 arm64
+# Runs once on instance launch (or on user_data change → replacement).
+set -euo pipefail
+
+hostnamectl set-hostname "${hostname}"
+
+# Enable IP forwarding — required for subnet router
+cat >/etc/sysctl.d/99-tailscale.conf <<EOF
+net.ipv4.ip_forward = 1
+net.ipv6.conf.all.forwarding = 1
+EOF
+sysctl -p /etc/sysctl.d/99-tailscale.conf
+
+# Install Tailscale (upstream repo)
+curl -fsSL https://pkgs.tailscale.com/stable/amazon-linux/2023/tailscale.repo -o /etc/yum.repos.d/tailscale.repo
+dnf install -y tailscale
+
+systemctl enable --now tailscaled
+
+# Join tailnet + advertise VPC routes
+tailscale up \
+  --authkey='${tailscale_auth_key}' \
+  --advertise-routes='${advertise_routes}' \
+  --accept-routes \
+  --ssh \
+  --hostname='${hostname}'
+
+# Verify
+tailscale status || true

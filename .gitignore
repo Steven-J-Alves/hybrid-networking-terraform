@@ -1,0 +1,27 @@
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+*.tfplan
+tfplan
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Credentials / secrets
+*.pem
+*.key
+.env
+secrets.tfvars
+*.auto.tfvars.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
