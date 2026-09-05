@@ -25,11 +25,14 @@ data "aws_subnets" "hybrid_private" {
   }
 }
 
+# All VPC route tables (public + private + db).
+# Public RTs need the CGNAT route so the public ALB can reach the VPS
+# Tailscale IP (100.73.87.120) as an IP target for weighted traffic split.
 data "aws_route_tables" "hybrid_private" {
   vpc_id = data.aws_vpc.hybrid.id
   filter {
     name   = "tag:Name"
-    values = ["*kriolu-kloud-vpc-private*"]
+    values = ["*kriolu-kloud-vpc-*"]
   }
 }
 
