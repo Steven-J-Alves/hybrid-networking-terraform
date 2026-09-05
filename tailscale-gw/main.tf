@@ -21,7 +21,7 @@ data "aws_subnets" "hybrid_private" {
   }
   filter {
     name   = "tag:Name"
-    values = ["*hybrid-vpc-private-*"]
+    values = ["*kriolu-kloud-vpc-private-*"]
   }
 }
 
@@ -29,7 +29,7 @@ data "aws_route_tables" "hybrid_private" {
   vpc_id = data.aws_vpc.hybrid.id
   filter {
     name   = "tag:Name"
-    values = ["*hybrid-vpc-private-*"]
+    values = ["*kriolu-kloud-vpc-private*"]
   }
 }
 
@@ -71,7 +71,7 @@ resource "aws_iam_instance_profile" "tailscale_gw" {
 
 resource "aws_security_group" "tailscale_gw" {
   name        = "${var.environment_name}-hybrid-tailscale-gw-sg"
-  description = "Tailscale subnet router — outbound to internet + intra-VPC"
+  description = "Tailscale subnet router - outbound to internet + intra-VPC"
   vpc_id      = data.aws_vpc.hybrid.id
 
   ingress {
