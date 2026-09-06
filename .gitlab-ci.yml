@@ -1,0 +1,175 @@
+# hybrid-networking-terraform · CI/CD root
+#
+# 2 stacks: tailscale-gw + ecs-anywhere-activation.
+# Both apply/destroy manual gated by environment `hybrid-prod`.
+#
+# Required CI variables (protected+masked):
+#   AWS_ACCESS_KEY_ID          (kk-hybrid-terraform-ci)
+#   AWS_SECRET_ACCESS_KEY      (sensitive)
+#   AWS_DEFAULT_REGION         = us-east-1
+#   TF_VAR_tailscale_auth_key  (sensitive; reusable+preauthorized)
+#
+# Runner tag: vps (native shell + docker)
+
+stages:
+  - validate
+  - plan
+  - apply
+  - destroy
+
+.tf_base:
+  image:
+    name: hashicorp/terraform:1.9
+    entrypoint: [""]
+  tags: [vps]
+  before_script:
+    - export TF_IN_AUTOMATION=1 TF_INPUT=0
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Stack 1: tailscale-gw
+# ═══════════════════════════════════════════════════════════════════════════════
+
+.tsgw_base:
+  extends: .tf_base
+  cache:
+    key: hybrid-tailscale-gw
+    paths: [ "tailscale-gw/.terraform/" ]
+    policy: pull-push
+
+tsgw:validate:
+  extends: .tsgw_base
+  stage: validate
+  script:
+    - terraform -chdir=tailscale-gw init -input=false -reconfigure
+    - terraform -chdir=tailscale-gw validate
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes: [ "tailscale-gw/**/*" ]
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes: [ "tailscale-gw/**/*" ]
+
+tsgw:plan:
+  extends: .tsgw_base
+  stage: plan
+  resource_group: hybrid-tsgw
+  script:
+    - terraform -chdir=tailscale-gw init -input=false -reconfigure
+    - terraform -chdir=tailscale-gw plan -input=false -out=tfplan
+  artifacts:
+    paths: [ "tailscale-gw/tfplan" ]
+    expire_in: 1 day
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes: [ "tailscale-gw/**/*" ]
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes: [ "tailscale-gw/**/*" ]
+  needs: [ tsgw:validate ]
+
+tsgw:apply:
+  extends: .tsgw_base
+  stage: apply
+  resource_group: hybrid-tsgw
+  environment:
+    name: hybrid-prod
+    action: start
+  script:
+    - terraform -chdir=tailscale-gw init -input=false -reconfigure
+    - terraform -chdir=tailscale-gw apply -input=false tfplan
+    - echo "→ Manual step: approve subnet routes at https://login.tailscale.com/admin/machines"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+      allow_failure: false
+  needs: [ tsgw:plan ]
+
+tsgw:destroy:
+  extends: .tsgw_base
+  stage: destroy
+  resource_group: hybrid-tsgw
+  environment:
+    name: hybrid-prod
+    action: stop
+  script:
+    - terraform -chdir=tailscale-gw init -input=false -reconfigure
+    - terraform -chdir=tailscale-gw destroy -input=false -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+      allow_failure: true
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Stack 2: ecs-anywhere-activation
+# ═══════════════════════════════════════════════════════════════════════════════
+
+.eca_base:
+  extends: .tf_base
+  cache:
+    key: hybrid-ecs-anywhere-activation
+    paths: [ "ecs-anywhere-activation/.terraform/" ]
+    policy: pull-push
+
+eca:validate:
+  extends: .eca_base
+  stage: validate
+  script:
+    - terraform -chdir=ecs-anywhere-activation init -input=false -reconfigure
+    - terraform -chdir=ecs-anywhere-activation validate
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes: [ "ecs-anywhere-activation/**/*" ]
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes: [ "ecs-anywhere-activation/**/*" ]
+
+eca:plan:
+  extends: .eca_base
+  stage: plan
+  resource_group: hybrid-eca
+  script:
+    - terraform -chdir=ecs-anywhere-activation init -input=false -reconfigure
+    - terraform -chdir=ecs-anywhere-activation plan -input=false -out=tfplan
+  artifacts:
+    paths: [ "ecs-anywhere-activation/tfplan" ]
+    expire_in: 1 day
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes: [ "ecs-anywhere-activation/**/*" ]
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes: [ "ecs-anywhere-activation/**/*" ]
+  needs: [ eca:validate ]
+
+eca:apply:
+  extends: .eca_base
+  stage: apply
+  resource_group: hybrid-eca
+  environment:
+    name: hybrid-prod
+    action: start
+  script:
+    - terraform -chdir=ecs-anywhere-activation init -input=false -reconfigure
+    - terraform -chdir=ecs-anywhere-activation apply -input=false tfplan
+    # Publish outputs as JSON artifact for the Ansible pipeline to consume
+    - terraform -chdir=ecs-anywhere-activation output -json > tf-outputs.json
+    - echo "→ Ansible pipeline can now pull artifact tf-outputs.json + run playbook"
+  artifacts:
+    paths: [ "tf-outputs.json" ]
+    expire_in: 1 hour
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+      allow_failure: false
+  needs: [ eca:plan ]
+
+eca:destroy:
+  extends: .eca_base
+  stage: destroy
+  resource_group: hybrid-eca
+  environment:
+    name: hybrid-prod
+    action: stop
+  script:
+    - terraform -chdir=ecs-anywhere-activation init -input=false -reconfigure
+    - terraform -chdir=ecs-anywhere-activation destroy -input=false -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+      allow_failure: true
