@@ -75,7 +75,7 @@ tsgw:apply:
   script:
     - terraform -chdir=tailscale-gw init -input=false -reconfigure
     - terraform -chdir=tailscale-gw apply -input=false tfplan
-    - echo "→ Manual step: approve subnet routes at https://login.tailscale.com/admin/machines"
+    - 'echo "Manual step: approve subnet routes at https://login.tailscale.com/admin/machines"'
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: manual
@@ -149,7 +149,7 @@ eca:apply:
     - terraform -chdir=ecs-anywhere-activation apply -input=false tfplan
     # Publish outputs as JSON artifact for the Ansible pipeline to consume
     - terraform -chdir=ecs-anywhere-activation output -json > tf-outputs.json
-    - echo "→ Ansible pipeline can now pull artifact tf-outputs.json + run playbook"
+    - 'echo "Ansible pipeline can now pull artifact tf-outputs.json + run playbook"'
   artifacts:
     paths: [ "tf-outputs.json" ]
     expire_in: 1 hour
