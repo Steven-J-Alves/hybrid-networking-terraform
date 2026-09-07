@@ -35,9 +35,9 @@ variable "cgnat_range" {
 }
 
 variable "instance_type" {
-  description = "EC2 instance type for the subnet router. t4g.nano is enough for admin/backup workloads."
+  description = "EC2 instance type for the subnet router. t4g.small (2GB) needed: t4g.nano (512MB) OOM-kills dnf install tailscale during user-data."
   type        = string
-  default     = "t4g.nano"
+  default     = "t4g.small"
 }
 
 variable "ssh_admin_cidrs" {
