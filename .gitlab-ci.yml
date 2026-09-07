@@ -83,6 +83,7 @@ tsgw:apply:
   needs: [ tsgw:plan ]
 
 tsgw:destroy:
+  needs: []
   extends: .tsgw_base
   stage: destroy
   resource_group: hybrid-tsgw
@@ -160,6 +161,7 @@ eca:apply:
   needs: [ eca:plan ]
 
 eca:destroy:
+  needs: []
   extends: .eca_base
   stage: destroy
   resource_group: hybrid-eca
