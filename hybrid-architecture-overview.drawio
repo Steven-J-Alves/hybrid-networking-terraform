@@ -1,0 +1,201 @@
+<mxfile host="65bd71144e">
+    <diagram id="hybrid-arch-overview" name="Hybrid VPS to AWS">
+        <mxGraphModel dx="2100" dy="1282" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="2200" pageHeight="1620" background="#ffffff" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="Hybrid VPS ↔ AWS Architecture — Kriolu Kloud (live)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=20;fontStyle=1;fontColor=#232F3E;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="20" width="900" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="subtitle" value="Cluster p-hybrid-apis · VPC 10.230.0.0/16 · Contabo 161.97.83.115 · Tailscale mesh" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="60" width="900" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="users" value="Internet users" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3E;strokeColor=#232F3E;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=1;aspect=fixed;shape=mxgraph.aws4.user;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="120" width="60" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="route53" value="Route 53&#10;kriolu-kloud.cv" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#8C4FFF;labelBackgroundColor=#ffffff;align=center;html=1;fontSize=11;fontStyle=1;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.route_53;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="120" width="60" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="r53-records" value="A alias app.kriolu-kloud.cv         →  ALB public&#10;A alias app-api.kriolu-kloud.cv     →  ALB public&#10;A alias api-internal.kriolu-kloud.cv →  ALB private&#10;A       direct.kriolu-kloud.cv       →  161.97.83.115  (VPS direct)&#10;A       direct-api.kriolu-kloud.cv   →  161.97.83.115  (VPS direct)" style="text;html=1;strokeColor=#8C4FFF;fillColor=#F4EBFF;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontFamily=Courier New;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="90" width="440" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="note" value="⚙  Cutover strategy&#10;vps_front_traffic_weight  (0-100)&#10;vps_api_traffic_weight    (0-100)&#10;Flip ratio without infra change.&#10;100 = full VPS cutover." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;fontSize=10;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="220" width="220" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="aws-cloud" value="AWS Cloud · us-east-1" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=#ffffff;verticalLabelPosition=top;verticalAlign=bottom;align=center;html=1;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="318" y="224" width="1180" height="1170" as="geometry"/>
+                </mxCell>
+                <mxCell id="vpc" value="VPC hybrid · 10.230.0.0/16" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_vpc;strokeColor=#8C4FFF;fillColor=#F4EBFF;verticalLabelPosition=top;verticalAlign=bottom;align=center;html=1;fontSize=11;fontStyle=1;" parent="aws-cloud" vertex="1">
+                    <mxGeometry x="40" y="60" width="1100" height="1050" as="geometry"/>
+                </mxCell>
+                <mxCell id="subnet-pub" value="Public subnets · public-a/b/c · 10.230.0.0/20" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_public_subnet;strokeColor=#7AA116;fillColor=#F2F6E8;verticalLabelPosition=top;verticalAlign=bottom;align=center;html=1;fontSize=10;fontStyle=1;" parent="vpc" vertex="1">
+                    <mxGeometry x="20" y="60" width="1060" height="380" as="geometry"/>
+                </mxCell>
+                <mxCell id="igw" value="IGW" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#8C4FFF;labelBackgroundColor=#ffffff;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.internet_gateway;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="20" y="40" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="natgw" value="NAT GW" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#8C4FFF;labelBackgroundColor=#ffffff;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.nat_gateway;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="100" y="40" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="alb-pub" value="ALB public&#10;p-hybrid-apis-public-alb&#10;:443" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#8C4FFF;labelBackgroundColor=#ffffff;align=center;html=1;fontSize=10;fontStyle=1;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application_load_balancer;verticalLabelPosition=bottom;verticalAlign=top;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="220" y="17" width="60" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="alb-pvt" value="ALB private (internal)&#10;p-hybrid-apis-private-alb&#10;:80 + :443" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#8C4FFF;labelBackgroundColor=#ffffff;align=center;html=1;fontSize=10;fontStyle=1;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application_load_balancer;verticalLabelPosition=bottom;verticalAlign=top;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="746" y="10" width="60" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="tg-pub-front-aws" value="TG p-app-front-pub&#10;instance (AWS EC2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2F6E8;strokeColor=#7AA116;fontSize=9;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="180" y="180" width="140" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="tg-pub-front-vps" value="TG p-app-front-vps-pub&#10;ip → 100.73.87.120" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=9;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="180" y="230" width="140" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="tg-pub-api-aws" value="TG p-app-api-pub&#10;instance (AWS EC2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2F6E8;strokeColor=#7AA116;fontSize=9;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="340" y="180" width="140" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="tg-pub-api-vps" value="TG p-app-api-vps-pub&#10;ip → 100.73.87.120" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=9;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="340" y="230" width="140" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="pub-rule-front" value="Rule Host(app.*)&#10;forward [aws:80, vps:20]" style="text;html=1;strokeColor=#7AA116;fillColor=#ffffff;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=9;spacingLeft=6;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="180" y="120" width="150" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="pub-rule-api" value="Rule Host(app-api.*)&#10;forward [aws:80, vps:20]" style="text;html=1;strokeColor=#7AA116;fillColor=#ffffff;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=9;spacingLeft=6;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="340" y="120" width="150" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="tg-pvt-front-aws" value="TG p-app-front-pvt&#10;instance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2F6E8;strokeColor=#7AA116;fontSize=9;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="640" y="180" width="140" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="tg-pvt-front-vps" value="TG p-app-front-vps-pvt&#10;ip → 100.73.87.120" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=9;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="640" y="230" width="140" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="tg-pvt-api-aws" value="TG p-app-api-pvt&#10;instance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2F6E8;strokeColor=#7AA116;fontSize=9;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="800" y="180" width="140" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="tg-pvt-api-vps" value="TG p-app-api-vps-pvt&#10;ip → 100.73.87.120" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=9;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="800" y="230" width="140" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="pvt-rule-front" value="Rule Host(app.*)&#10;forward [aws:80, vps:20]&#10;on 443 + 80" style="text;html=1;strokeColor=#7AA116;fillColor=#ffffff;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=9;spacingLeft=6;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="640" y="120" width="150" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="pvt-rule-api" value="Rule Host(app-api.*)&#10;forward [aws:80, vps:20]&#10;on 443 + 80" style="text;html=1;strokeColor=#7AA116;fillColor=#ffffff;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=9;spacingLeft=6;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="800" y="120" width="150" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="alb-note" value="AWS ELBv2: one TG per ALB (TargetGroupAssociationLimit) → 4 duplicated VPS TGs, same backend Tailscale IP." style="text;html=1;strokeColor=none;fillColor=#fff9c4;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=9;fontStyle=2;" parent="subnet-pub" vertex="1">
+                    <mxGeometry x="180" y="290" width="760" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="subnet-priv" value="Private subnets (compute) · private-a/b/c · 10.230.48.0/20" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_private_subnet;strokeColor=#147EBA;fillColor=#E6F2F8;verticalLabelPosition=top;verticalAlign=bottom;align=center;html=1;fontSize=10;fontStyle=1;" parent="vpc" vertex="1">
+                    <mxGeometry x="20" y="470" width="1060" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="ecs-cluster" value="ECS cluster p-hybrid-apis" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#ED7100;labelBackgroundColor=#ffffff;align=center;html=1;fontSize=10;fontStyle=1;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elastic_container_service;verticalLabelPosition=bottom;verticalAlign=top;" parent="subnet-priv" vertex="1">
+                    <mxGeometry x="60" y="80" width="60" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="asg-t4g" value="ASG Graviton t4g Spot&#10;capacity provider&#10;5 workloads × 1 task = 5 tasks (EC2 launch type)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#ED7100;fontSize=10;spacingLeft=8;align=left;" parent="subnet-priv" vertex="1">
+                    <mxGeometry x="160" y="60" width="280" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="ecsa-vps" value="ECS Anywhere&#10;container instance&#10;(external — VPS registered)&#10;5 tasks (EXTERNAL launch type)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=10;spacingLeft=8;align=left;dashed=1;" parent="subnet-priv" vertex="1">
+                    <mxGeometry x="470" y="60" width="240" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="tsgw" value="tsgw · EC2 t4g.small&#10;Amazon Linux 2023 arm64&#10;Tailscale subnet router&#10;advertise 10.230.0.0/16&#10;source_dest_check=false" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;spacingLeft=8;align=left;" parent="subnet-priv" vertex="1">
+                    <mxGeometry x="740" y="60" width="240" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="routetable-note" value="Route tables (public + private + db) all have:&#10;100.64.0.0/10 (CGNAT) → tsgw ENI      enables ALB targets to reach VPS via Tailscale" style="text;html=1;strokeColor=#8C4FFF;fillColor=#F4EBFF;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontFamily=Courier New;spacingLeft=8;" parent="subnet-priv" vertex="1">
+                    <mxGeometry x="60" y="220" width="920" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="subnet-db" value="Database subnets · db-a/b/c · 10.230.144.0/20   (PLANNED — data stack not applied)" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_private_subnet;strokeColor=#E64A19;fillColor=#FBE9E7;verticalLabelPosition=top;verticalAlign=bottom;align=center;html=1;fontSize=10;fontStyle=1;dashed=1;" parent="vpc" vertex="1">
+                    <mxGeometry x="20" y="820" width="1060" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="rds-planned" value="RDS PostgreSQL&#10;t4g.small (planned)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#3334B9;labelBackgroundColor=#ffffff;align=center;html=1;fontSize=10;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rds;verticalLabelPosition=bottom;verticalAlign=top;dashed=1;" parent="subnet-db" vertex="1">
+                    <mxGeometry x="120" y="70" width="60" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="redis-planned" value="ElastiCache Redis&#10;t4g.micro (planned)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#C925D1;labelBackgroundColor=#ffffff;align=center;html=1;fontSize=10;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elasticache;verticalLabelPosition=bottom;verticalAlign=top;dashed=1;" parent="subnet-db" vertex="1">
+                    <mxGeometry x="380" y="70" width="60" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="tailnet-note" value="tsgw ↔ VPS direct connection&#10;VPS accept-routes = true&#10;Route advertised: 10.230.0.0/16" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=9;fontColor=#666;" parent="1" vertex="1">
+                    <mxGeometry x="1490" y="820" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="vps-box" value="Contabo VPS · 161.97.83.115 (IPv4 pub) · Debian · Docker Engine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=12;fontStyle=1;verticalAlign=top;spacingTop=8;" parent="1" vertex="1">
+                    <mxGeometry x="1726" y="237" width="640" height="1170" as="geometry"/>
+                </mxCell>
+                <mxCell id="vps-tailscale" value="Tailscale client · 100.73.87.120 · RouteAll=true · Routes accepted: 10.230.0.0/16" style="text;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontFamily=Courier New;spacingLeft=6;" parent="vps-box" vertex="1">
+                    <mxGeometry x="20" y="40" width="600" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="traefik" value="Traefik reverse-proxy (container)&#10;entryPoints: web :80 + websecure :443&#10;ping: entryPoint web&#10;certResolver letsencrypt (HTTP challenge)&#10;providers.docker (docker.sock)&#10;network: traefik-public + bridge" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#2e7d32;fontSize=10;fontStyle=1;align=left;spacingLeft=8;verticalAlign=top;spacingTop=6;" parent="vps-box" vertex="1">
+                    <mxGeometry x="20" y="90" width="290" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="docker-sock" value="docker.sock&#10;/var/run/docker.sock" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#f9a825;fontSize=9;spacingLeft=6;align=left;" parent="vps-box" vertex="1">
+                    <mxGeometry x="330" y="130" width="140" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="letsencrypt-note" value="Let's Encrypt cert auto-emitted&#10;on 1st HTTPS request for direct.*&#10;via HTTP-01 challenge :80" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=9;fontStyle=2;" parent="vps-box" vertex="1">
+                    <mxGeometry x="330" y="90" width="290" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="wl-vps-title" value="ECS Anywhere workloads · bridge network · dockerLabels drive Traefik routers" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;fontStyle=1;fontColor=#2e7d32;spacingLeft=8;" parent="vps-box" vertex="1">
+                    <mxGeometry x="20" y="240" width="600" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="wl-front-vps" value="p-app-front-vps&#10;router rule: Host(app.kriolu-kloud.cv) || Host(direct.kriolu-kloud.cv)&#10;entrypoints: web + websecure (LE tls)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#2e7d32;fontSize=10;align=left;spacingLeft=8;" parent="vps-box" vertex="1">
+                    <mxGeometry x="20" y="270" width="600" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="wl-api-vps" value="p-app-api-vps&#10;router rule: Host(app-api.kriolu-kloud.cv) || Host(direct-api.kriolu-kloud.cv)&#10;entrypoints: web + websecure (LE tls)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#2e7d32;fontSize=10;align=left;spacingLeft=8;" parent="vps-box" vertex="1">
+                    <mxGeometry x="20" y="340" width="600" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="wl-worker-vps" value="p-app-worker-vps (no HTTP router — pulls from api)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcedc8;strokeColor=#558b2f;fontSize=10;spacingLeft=8;align=left;" parent="vps-box" vertex="1">
+                    <mxGeometry x="20" y="410" width="600" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="wl-scheduler-vps" value="p-app-scheduler-vps (no HTTP router — cron dispatcher)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcedc8;strokeColor=#558b2f;fontSize=10;spacingLeft=8;align=left;" parent="vps-box" vertex="1">
+                    <mxGeometry x="20" y="454" width="600" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="wl-manager-vps" value="p-app-manager-vps (no HTTP router — orchestrator)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcedc8;strokeColor=#558b2f;fontSize=10;spacingLeft=8;align=left;" parent="vps-box" vertex="1">
+                    <mxGeometry x="20" y="498" width="600" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="vps-extra-hosts" value="extraHosts (each task): app-api.kriolu-kloud.cv → 172.17.0.1 (docker bridge gateway → Traefik)   enables inter-workload calls via Traefik" style="text;html=1;strokeColor=#f9a825;fillColor=#fff9c4;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontFamily=Courier New;spacingLeft=6;" parent="vps-box" vertex="1">
+                    <mxGeometry x="20" y="555" width="600" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="vps-agent" value="ECS Anywhere agent (systemd) · registered as container-instance in p-hybrid-apis" style="text;html=1;strokeColor=#2e7d32;fillColor=#e8f5e9;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontStyle=1;" parent="vps-box" vertex="1">
+                    <mxGeometry x="20" y="620" width="600" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend" value="LEGEND" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#232F3E;fontSize=11;fontStyle=1;verticalAlign=top;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="1520" y="1450" width="640" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend-body" value="Colors: AWS = purple (#8C4FFF) · VPS = green (#2e7d32) · Tailscale = violet (#9673a6) · Planned/dashed = not deployed yet&#10;Solid arrows = data plane (HTTPS clients → ALB → Traefik → container)&#10;Dashed arrows = optional bypass (Internet → 161.97.83.115 direct.*, skips AWS ALB)&#10;Weight labels on ALB rules control the split (default aws:80 / vps:20)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;spacingLeft=6;spacingTop=8;" parent="legend" vertex="1">
+                    <mxGeometry y="24" width="640" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-users-r53" value="DNS query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;fontSize=9;" parent="1" source="users" target="route53" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-users-albpub" value="HTTPS :443" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#8C4FFF;strokeWidth=2;fontSize=9;" parent="1" source="users" target="alb-pub" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-users-vps-direct" value="direct.* / direct-api.*&#10;HTTPS bypass" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#2e7d32;strokeWidth=2;dashed=1;dashPattern=8 4;fontSize=9;" parent="1" source="users" target="vps-box" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="120" y="1440"/>
+                            <mxPoint x="1500" y="1440"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e-albpub-tailnet" value="TG-vps → 100.73.87.120:80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#9673a6;strokeWidth=2;fontSize=9;" parent="1" source="tg-pub-front-vps" target="tailnet" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-tailnet-vps" value="tunnel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#9673a6;strokeWidth=2;fontSize=9;" parent="1" source="tailnet" target="traefik" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-tsgw-tailnet" value="advertise 10.230.0.0/16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=classic;strokeColor=#9673a6;strokeWidth=2;dashed=1;fontSize=9;" parent="1" source="tsgw" target="tailnet" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-traefik-front" value="Host(app.*)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#2e7d32;fontSize=9;" parent="1" source="traefik" target="wl-front-vps" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-traefik-api" value="Host(app-api.*)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#2e7d32;fontSize=9;" parent="1" source="traefik" target="wl-api-vps" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-traefik-sock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#f9a825;dashed=1;" parent="1" source="traefik" target="docker-sock" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-ecsa-vps" value="registered instance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;strokeColor=#2e7d32;dashed=1;fontSize=9;" parent="1" source="ecsa-vps" target="vps-agent" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="tailnet" value="Tailscale mesh&#10;100.64.0.0/10" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;fontStyle=1;dashed=1;dashPattern=8 4;" parent="1" vertex="1">
+                    <mxGeometry x="1503" y="671" width="200" height="120" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

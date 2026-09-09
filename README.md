@@ -1,5 +1,7 @@
 # hybrid-networking-terraform
 
+![Hybrid architecture overview](hybrid-architecture-overview.png)
+
 The **glue** between AWS and the Contabo VPS. Everything ECS-related lives in [`../../../ecs/hybrid-ecs-terraform/`](../../../ecs/hybrid-ecs-terraform/) — this repo stays small on purpose: infra that rarely changes after it stabilises.
 
 ## Stacks
